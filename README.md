@@ -1,13 +1,14 @@
 # carousel-source
 
 Carousel component consists of 'Carousel.jsx' and 'Carousel.css' files that are in 'carousel' folder. 
-To use the carousel in your application you need to download 'Carousel.jsx', 'Carousel.css' files and put them in a separate folder. After that you 
+To use the carousel in your application you need to download 'Carousel.jsx', 'Carousel.css' files and put them into silngle separate folder. After that you 
 can import the component and use it wherever you want. 
 
 For example: 
 import Carousel from "./carousel/Carousel";
-
-/* const App = () => (
+```html
+import Carousel from "./carousel/Carousel";
+ const App = () => (
     <Carousel 
     speed={400} 
     visibleElems={1} 
@@ -24,9 +25,8 @@ import Carousel from "./carousel/Carousel";
       <img src='' alt="" />
       <img src='' alt="" />
     </Carousel>
- 
-)*/
-
+)
+```
 Images must be put in the component as props.children
 
 Carousel component has several options:
