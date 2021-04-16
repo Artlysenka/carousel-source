@@ -1,6 +1,6 @@
 # carousel-source
 
-Carousel component consists of 'Carousel.js' and 'Carousel.css' files that are in 'carousel' folder. 
+Carousel component consists of 'Carousel.js' and 'Carousel.css' files that are in 'src/carousel' folder. 
 To use the carousel in your application you need to download 'Carousel.jsx', 'Carousel.css' files and put them into silngle separate folder. After that you 
 can import the component and use it wherever you want. 
 
