@@ -29,10 +29,15 @@ import Carousel from "./carousel/Carousel";
 Images must be put in the component as props.children
 
 Carousel component has several options:
+---
 speed(number): speed of moving slides (ms)
+***
 visibleElems(number): the amount of images that will be visible on the screen at a time (not less than 1)
+***
 slideSteps(number): the amount of images that will be swiped at a time (not less than 1 and not more than 'visibleElems')
+***
 autoplay(boolean): turns on/off the carousel self-moving
+***
 autoplayFrequensy(number): if autoplay is 'true', how often to move carousel (ms)
 
 
