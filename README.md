@@ -7,7 +7,7 @@ can import the component and use it wherever you want.
 For example: 
 import Carousel from "./carousel/Carousel";
 
-const App = () => (
+/* const App = () => (
     <Carousel 
     speed={400} 
     visibleElems={1} 
@@ -25,7 +25,7 @@ const App = () => (
       <img src='' alt="" />
     </Carousel>
  
-);
+)*/
 
 Images must be put in the component as props.children
 
