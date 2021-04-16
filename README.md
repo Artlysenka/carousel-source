@@ -5,7 +5,6 @@ To use the carousel in your application you need to download 'Carousel.jsx', 'Ca
 can import the component and use it wherever you want. 
 
 For example: 
-import Carousel from "./carousel/Carousel";
 ```html
 import Carousel from "./carousel/Carousel";
  const App = () => (
