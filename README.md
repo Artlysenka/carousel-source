@@ -86,5 +86,5 @@ Carousel component has several options:
 ***
 **mobileWidth**(number): sets the width of the whole carousel for screens less than 992 px (vw)
 
-working example: 
+working example: https://artlysenka.github.io/carousel/
 
