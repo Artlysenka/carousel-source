@@ -64,9 +64,9 @@ Carousel component has several options:
 ---
 **speed**(number): speed of moving slides (ms)
 ***
-**visibleElems**(number): the amount of images that will be visible on the screen at a time (not less than 1)
+**visibleElems**(number): the amount of slides that are visible on the screen at a time (not less than 1)
 ***
-**slideSteps**(number): the amount of images that will be swiped at a time (not less than 1 and not more than '**visibleElems**')
+**slideSteps**(number): the amount of slides that are swiped at a time (not less than 1 and not more than **visibleElems**)
 ***
 **autoplay**(boolean): turns on/off the carousel self-moving
 ***
@@ -74,7 +74,7 @@ Carousel component has several options:
 ***
 **loop**(boolean): if 'true', the carousel is looped
 ***
-**mouseEvents**(boolean): enabels/disables the mouse events on the carousel
+**mouseEvents**(boolean): enabels/disables swiping the carouesl with the mouse
 ***
 **slideOffset**(number): sets the left and right margin to the slide content(px)
 ***
