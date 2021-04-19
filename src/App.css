@@ -2,11 +2,13 @@ html {
     font-size: 2vw;
 }
 body {
-    background-color: black;
+    /* background-color: black; */
+    margin: 0px;
+    padding: 0px;
 }
 .container {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 97vh;
+    height: 100vh;
 }
