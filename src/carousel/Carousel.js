@@ -18,7 +18,8 @@ const Carousel = (props) => {
     desktopWidth,
     mobileHeight,
     mobileWidth,
-    slideOffset
+    slideOffset,
+    mouseEvents
   } = props
   let position = 0 // initial margin
   let slideContent = [] // Array of elements that are in 'props.children'
@@ -33,16 +34,16 @@ const Carousel = (props) => {
   let viewport = 0 //initial width of the each slide
   let initialCoords = {
     x: 0
-  } 
+  }
   let currentCoords = {
     x: 0
-  } 
+  }
   let fingerInitialCoords = {
     x: 0
-  } 
+  }
   let currentFingerCoords = {
     x: 0
-  } 
+  }
 
   let initialTime // time when we touch/click on the slide
   let finaleTime // time when we move out the finger/coursor off the element
@@ -99,11 +100,15 @@ const Carousel = (props) => {
   const draw = (position, offset, viewport, place) => { // draws new slide 
     let slideContainer = document.createElement("div");
     slideContainer.style.marginRight = slideOffset + 'px'
+    slideContainer.style.marginLeft = slideOffset + 'px'
     ReactDOM.render(slideContent[position], slideContainer)
     let slide = document.createElement("div")
     slide.classList.add("slide")
     slide.style.transition = speed + 'ms'
-    slide.style.width = (100 / visibleElems) + '%' 
+    slide.style.width = 100 + '%'
+    slide.style.height = 100 + '%'
+    slide.style.position = 'absolute'
+    slide.style.width = (100 / visibleElems) + '%'
     slide.style.left = offset * viewport + "px"
     slide.append(slideContainer)
     if (place) {
@@ -114,61 +119,77 @@ const Carousel = (props) => {
     }
   }
 
-  const onMouseDown = (event) => { // handles the mouseUp/touchEnd events
+  const onMouseDown = (event) => {
     event.preventDefault()
     event.stopPropagation()
-    let clickTime = new Date
-    initialTime = clickTime.getTime()
-    mouseClickedOnTheElenent = true
-    if (loop) {
-      let currentSlides = document.querySelectorAll(".slide")
-      for (let i = 0; i < currentSlides.length; i++) {
-        currentSlides[i].style.transition = 0 + 'ms'
+    if (slideLeftPermission || slideRightPermission) {
+      let clickTime = new Date
+      initialTime = clickTime.getTime()
+      mouseClickedOnTheElenent = true
+      if (loop) {
+        let currentSlides = document.querySelectorAll(".slide")
+        for (let i = 0; i < currentSlides.length; i++) {
+          currentSlides[i].style.transition = 0 + 'ms'
+        }
       }
+      else {
+        let slider = document.getElementById('slider')
+        slider.style.transition = 0 + 'ms'
+      }
+      initialCoords.x = event.pageX
+      fingerInitialCoords.x = event.changedTouches[0].pageX
     }
     else {
-      let slider = document.getElementById('slider')
-      slider.style.transition = 0 + 'ms'
+      mouseClickedOnTheElenent = false
     }
-    initialCoords.x = event.pageX
-    fingerInitialCoords.x = event.changedTouches[0].pageX
+    // handles the mouseUp/touchEnd events
   }
 
   const moveFingerElem = (event) => { // handles the touchMove event
     event.preventDefault()
     event.stopPropagation()
-    currentFingerCoords.x = event.changedTouches[0].clientX - fingerInitialCoords.x
-    if (loop) {
-      let currentSlides = document.querySelectorAll(".slide")
-      let offset = -1 * slideSteps
-
-      for (let i = 0; i < currentSlides.length; i++) {
-        currentSlides[i].style.left = (offset * viewport) + currentFingerCoords.x
-        offset++
-      }
-    }
-    else {
-      let slider = document.getElementById('slider')
-      slider.style.marginLeft = position + currentFingerCoords.x + 'px'
-    }
-  }
-
-  const moveElem = (event) => { // handles the mouseMove event
-    event.preventDefault()
-    event.stopPropagation()
-    if (mouseClickedOnTheElenent) {
-      currentCoords.x = event.pageX - initialCoords.x
+    if (slideLeftPermission || slideRightPermission) {
+      currentFingerCoords.x = event.changedTouches[0].clientX - fingerInitialCoords.x
       if (loop) {
         let currentSlides = document.querySelectorAll(".slide")
         let offset = -1 * slideSteps
+  
         for (let i = 0; i < currentSlides.length; i++) {
-          currentSlides[i].style.left = (offset * viewport) + currentCoords.x + 'px'
+          currentSlides[i].style.left = (offset * viewport) + currentFingerCoords.x
           offset++
         }
       }
       else {
         let slider = document.getElementById('slider')
-        slider.style.marginLeft = position + currentCoords.x + 'px'
+        slider.style.marginLeft = position + currentFingerCoords.x + 'px'
+      }
+    }
+    else {
+      return null
+    }
+  }
+
+  const moveElem = (event) => {// handles the mouseMove event
+    event.preventDefault()
+    event.stopPropagation()
+    if (slideLeftPermission || slideRightPermission) {
+      if (mouseClickedOnTheElenent) {
+        currentCoords.x = event.pageX - initialCoords.x
+        if (loop) {
+          let currentSlides = document.querySelectorAll(".slide")
+          let offset = -1 * slideSteps
+          for (let i = 0; i < currentSlides.length; i++) {
+            currentSlides[i].style.left = (offset * viewport) + currentCoords.x + 'px'
+            offset++
+          }
+        }
+        else {
+          let slider = document.getElementById('slider')
+          slider.style.marginLeft = position + currentCoords.x + 'px'
+        }
+      }
+      else {
+        return null
       }
     }
     else {
@@ -179,53 +200,57 @@ const Carousel = (props) => {
   const onMouseUp = (event) => { // handles the mouseUp/touchEnd events
     event.preventDefault()
     event.stopPropagation()
-    let mouseUpTime = new Date
-    finaleTime = mouseUpTime.getTime()
-    mouseClickedOnTheElenent = false
-    let currentSlides = document.querySelectorAll(".slide")
-    for (let i = 0; i < currentSlides.length; i++) {
-      currentSlides[i].style.transition = speed + 'ms'
-    }
-    let slider = document.getElementById('slider')
-    slider.style.transition = speed + 'ms'
-
-    if (currentFingerCoords.x > 0 || currentCoords.x > 0) {
-      if (finaleTime - initialTime > 250 && currentCoords.x + currentFingerCoords.x < windowWidth / 2) {
-        if (loop) {
-          let offset = -1 * slideSteps
-          for (let i = 0; i < currentSlides.length; i++) {
-            currentSlides[i].style.left = offset * viewport + 'px'
-            offset++
+    if (slideLeftPermission || slideRightPermission) {
+      let mouseUpTime = new Date
+      finaleTime = mouseUpTime.getTime()
+      mouseClickedOnTheElenent = false
+      let currentSlides = document.querySelectorAll(".slide")
+      for (let i = 0; i < currentSlides.length; i++) {
+        currentSlides[i].style.transition = speed + 'ms'
+      }
+      let slider = document.getElementById('slider')
+      slider.style.transition = speed + 'ms'
+      if (currentFingerCoords.x > 0 || currentCoords.x > 0) {
+        if (finaleTime - initialTime > 250 && currentCoords.x + currentFingerCoords.x < windowWidth / 2) {
+          if (loop) {
+            let offset = -1 * slideSteps
+            for (let i = 0; i < currentSlides.length; i++) {
+              currentSlides[i].style.left = offset * viewport + 'px'
+              offset++
+            }
+          }
+          else {
+            slider.style.marginLeft = position + 'px'
           }
         }
         else {
-          slider.style.marginLeft = position + 'px'
+          return slideRight()
         }
       }
       else {
-        return slideRight()
+        if ((finaleTime - initialTime > 250) && currentCoords.x + currentFingerCoords.x > -windowWidth / 2) {
+          if (loop) {
+            let offset = -1 * slideSteps
+            for (let i = 0; i < currentSlides.length; i++) {
+              currentSlides[i].style.left = offset * viewport + 'px'
+              offset++
+            }
+          }
+          else {
+            slider.style.marginLeft = position + 'px'
+          }
+        }
+        else {
+          return slideLeft()
+        }
       }
     }
     else {
-      if (finaleTime - initialTime > 250 && currentCoords.x + currentFingerCoords.x > -windowWidth / 2) {
-        if (loop) {
-          let offset = -1 * slideSteps
-          for (let i = 0; i < currentSlides.length; i++) {
-            currentSlides[i].style.left = offset * viewport + 'px'
-            offset++
-          }
-        }
-        else {
-          slider.style.marginLeft = position + 'px'
-        }
-      }
-      else {
-        return slideLeft()
-      }
+      return null
     }
   }
 
-  
+
 
   const setStepLeft = () => { // changes the index of the slide that will appear on the left after we slide to the right
     if (stepRight + 1 == slideContent.length) {
@@ -272,6 +297,7 @@ const Carousel = (props) => {
       if (loop) {
         clearInterval(autoplaySlider)
         slideLeftPermission = false
+        slideRightPermission = false
         let currentSlides = document.querySelectorAll(".slide")
         let offset = -1 * slideSteps;
         for (let i = 0; i < currentSlides.length; i++) {
@@ -283,6 +309,7 @@ const Carousel = (props) => {
             autoplaySlider = setInterval(slideLeft, autoplayFrequensy)
           }
           slideLeftPermission = true
+          slideRightPermission = true
           for (let i = 0; i < slideSteps; i++) {
             setStepLeft()
             currentSlides[i].remove()
@@ -294,7 +321,7 @@ const Carousel = (props) => {
         let slider = document.getElementById('slider')
         slider.style.transition = speed + 'ms'
         let container = document.getElementById("viewport")
-        let viewport = (container.offsetWidth / visibleElems) 
+        let viewport = (container.offsetWidth / visibleElems)
         position -= viewport * slideSteps
         position = Math.max(position, -viewport * (children.length - slideSteps))
         slider.style.marginLeft = position + 'px'
@@ -310,6 +337,7 @@ const Carousel = (props) => {
       if (loop) {
         clearInterval(autoplaySlider)
         slideRightPermission = false
+        slideLeftPermission = false
         let currentSlides = document.querySelectorAll(".slide")
         let offset = -1;
         for (let i = 0; i < currentSlides.length; i++) {
@@ -321,6 +349,7 @@ const Carousel = (props) => {
             autoplaySlider = setInterval(slideLeft, autoplayFrequensy)
           }
           slideRightPermission = true
+          slideLeftPermission = true
           for (let i = 0; i < slideSteps; i++) {
             currentSlides[i + visibleElems + slideSteps].remove()
             setStepRight()
@@ -345,30 +374,42 @@ const Carousel = (props) => {
 
   return (
     <>
-      <div id='container'>
+      <div id='container' style={{
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center'
+      }}>
         <img
           src={arrowRight}
           alt='slide to the left'
-          class="next"
+          className='next'
           id='next'
           onClick={slideLeft} />
         <img
           src={arrowLeft}
           alt='slide to the right'
-          class="prev"
+          className='prev'
           id='prev'
           onClick={slideRight} />
 
-        <div id='viewport' className='viewport'>
+        <div id='viewport' style={{
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
           <div
             id='slider'
             className='slider'
-            onMouseMove={moveElem}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
+            onMouseMove={mouseEvents && moveElem}
+            onMouseDown={mouseEvents && onMouseDown}
+            onMouseUp={mouseEvents && onMouseUp}
             onTouchStart={onMouseDown}
             onTouchMove={moveFingerElem}
             onTouchEnd={onMouseUp}
+            style={{
+              position: 'relative',
+              height: '100%',
+              width: '100%'
+            }}
           ></div>
         </div>
       </div>

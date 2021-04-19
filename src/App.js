@@ -3,7 +3,12 @@ import Carousel from "./carousel/Carousel";
 import './App.css'
 
 const SlideContent = (props) => (
-    <img src={props.src} alt="" />
+    <img src={props.src} alt="" style={{
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      objectPosition: '0'
+    }}/>
 )
 
 const App = () => {
@@ -23,13 +28,14 @@ const App = () => {
     <div className='container'>
       <Carousel
         speed={400}
-        visibleElems={2}
+        visibleElems={1}
         slideSteps={1}
         autoplay={false}
         autoplayFrequensy={5000}
         loop={true}
-        slideOffset={5}
-        desktopHeight={60}
+        mouseEvents={true}
+        slideOffset={0}
+        desktopHeight={80}
         desktopWidth={60}
         mobileHeight={60}
         mobileWidth={100}
